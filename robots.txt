@@ -1,0 +1,9 @@
+User-Agent: *
+Content-Signal: search=yes, ai-train=no
+Allow: /
+
+user-agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-searchBot/10; +https://openai.com/searchbot
+Allow: /
+
+user-agent: *
+sitemap: https://political-practices-in-exile/multireligionvalsystem.eu.org/sitemap.xml
