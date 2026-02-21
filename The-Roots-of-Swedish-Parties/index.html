@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Roots of Swedish Parties - Interactive Flipbook</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .book-container {
+      perspective: 1500px;
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    .book {
+      width: 100%;
+      height: 600px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+    }
+    
+    .page {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: white;
+      border: 2px solid #333;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform-origin: left center;
+      transition: transform 0.6s;
+      backface-visibility: hidden;
+    }
+    
+    .page.turned {
+      transform: rotateY(-180deg);
+    }
+    
+    /* Book Cover */
+    .cover {
+      background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+      border: 3px solid #d4af37;
+    }
+    
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 2px solid #d4af37;
+      opacity: 0.5;
+    }
+    
+    .cover-ornament {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #d4af37;
+    }
+    
+    .cover-title-main {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      line-height: 1.2;
+    }
+    
+    .cover-title-sub {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #d4af37;
+      font-style: italic;
+    }
+    
+    .cover-divider {
+      width: 200px;
+      height: 3px;
+      background: #d4af37;
+      margin: 20px 0;
+    }
+    
+    .cover-author {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .cover-organization {
+      font-size: 1rem;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+    
+    .cover-location {
+      font-size: 0.9rem;
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+    
+    /* Regular Pages */
+    .page-content {
+      padding: 60px 40px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .page-number {
+      position: absolute;
+      bottom: 30px;
+      right: 40px;
+      font-size: 1rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .page-header {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #999;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Georgia', serif;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .btn:hover {
+      background: #34495e;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(0,0,0,0.4);
+    }
+    
+    .btn:disabled {
+      background: #7f8c8d;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .page-info {
+      font-size: 1.2rem;
+      color: white;
+      font-weight: bold;
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    .jump-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .jump-input {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: 2px solid #2c3e50;
+      border-radius: 5px;
+      width: 100px;
+      text-align: center;
+    }
+    
+    .info-text {
+      color: white;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    /* Page Tabs on Left Edge (Inside Book) */
+    .page-tabs {
+      position: absolute;
+      left: -3mm;
+      top: 0;
+      width: 50px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      z-index: 100;
+      padding: 20px 0;
+    }
+    
+    .page-tab {
+      background: linear-gradient(90deg, #34495e 0%, #2c3e50 100%);
+      color: white;
+      padding: 8px 3px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 5px 0 0 5px;
+      box-shadow: -2px 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 3px solid #d4af37;
+      margin: 2px 0;
+    }
+    
+    .page-tab:hover {
+      background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+      transform: translateX(-3px);
+      box-shadow: -3px 3px 8px rgba(0,0,0,0.4);
+      border-right: 4px solid #f1c40f;
+    }
+    
+    .page-tab.active {
+      background: linear-gradient(90deg, #f1c40f 0%, #d4af37 100%);
+      color: #2c3e50;
+      font-weight: bold;
+      border-right: 4px solid #2c3e50;
+      transform: translateX(-5px);
+      box-shadow: -4px 3px 10px rgba(0,0,0,0.5);
+    }
+    
+    /* Current Page Indicator */
+    .current-page-indicator {
+      position: absolute;
+      left: calc(50px - 3mm);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e74c3c;
+      color: white;
+      padding: 15px 10px;
+      border-radius: 8px 0 0 8px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: -3px 3px 10px rgba(0,0,0,0.4);
+      min-width: 70px;
+      text-align: center;
+      border-right: 4px solid #c0392b;
+      z-index: 99;
+    }
+    
+    .current-page-indicator::before {
+      content: 'NOW';
+      display: block;
+      font-size: 0.6rem;
+      opacity: 0.8;
+      margin-bottom: 3px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .book {
+        height: 400px;
+      }
+      
+      .cover-title-main {
+        font-size: 2rem;
+      }
+      
+      .cover-title-sub {
+        font-size: 1.3rem;
+      }
+      
+      .page-content {
+        padding: 30px 20px;
+      }
+      
+      .page-tabs {
+        left: -2mm;
+        width: 40px;
+      }
+      
+      .page-tab {
+        font-size: 0.6rem;
+        padding: 6px 2px;
+        min-height: 25px;
+      }
+      
+      .current-page-indicator {
+        left: calc(40px - 2mm);
+        padding: 10px 8px;
+        font-size: 1rem;
+        min-width: 55px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="book-container">
+    <div class="book" id="book">
+      <!-- Cover Page -->
+      <div class="page cover" id="page-0">
+        <div class="cover-ornament">⚜️</div>
+        <h1 class="cover-title-main">The Roots<br>of<br>Swedish Parties</h1>
+        <div class="cover-divider"></div>
+        <h2 class="cover-title-sub">A Historical Analysis</h2>
+        <div class="cover-divider"></div>
+        <p class="cover-author">Multireligionvalsystem</p>
+        <p class="cover-organization">Research Department</p>
+        <p class="cover-location">Stockholm, Sweden • 2026</p>
+      </div>
+      
+      <!-- Generate 600 empty pages dynamically with JavaScript -->
+    </div>
+    
+    <!-- Page Tabs on Right Edge -->
+    <div class="page-tabs" id="pageTabs">
+      <!-- Tabs will be generated by JavaScript -->
+    </div>
+    
+    <!-- Current Page Indicator -->
+    <div class="current-page-indicator" id="currentPageIndicator">
+      0
+    </div>
+    
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="previousPage()">← Previous</button>
+      <div class="page-info" id="pageInfo">Page 0 of 600</div>
+      <button class="btn" id="nextBtn" onclick="nextPage()">Next →</button>
+    </div>
+    
+    <div class="jump-controls">
+      <input type="number" id="jumpInput" class="jump-input" min="0" max="600" placeholder="Page #">
+      <button class="btn" onclick="jumpToPage()">Jump to Page</button>
+    </div>
+    
+    <p class="info-text">
+      600 pages • Click Next/Previous or use arrow keys to flip pages
+    </p>
+  </div>
+
+  <script>
+    // Generate all 600 pages
+    const book = document.getElementById('book');
+    const totalPages = 600;
+    let currentPage = 0;
+    
+    // Create all pages
+    for (let i = 1; i <= totalPages; i++) {
+      const page = document.createElement('div');
+      page.className = 'page';
+      page.id = `page-${i}`;
+      page.innerHTML = `
+        <div class="page-content">
+          <div class="page-header">The Roots of Swedish Parties</div>
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #ddd;">
+            <p style="font-size: 1.2rem; font-style: italic;">Page ${i}</p>
+          </div>
+          <div class="page-number">${i}</div>
+        </div>
+      `;
+      book.appendChild(page);
+    }
+
+    // Update page info display
+    function updatePageInfo() {
+      document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prevBtn').disabled = currentPage === 0;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages;
+    }
+    
+    // Next page function
+    function nextPage() {
+      if (currentPage < totalPages) {
+        const page = document.getElementById(`page-${currentPage}`);
+        if (page) {
+          page.classList.add('turned');
+        }
+        currentPage++;
+        updatePageInfo();
+      }
+    }
+    
+    // Previous page function
+    function previousPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        const page = document.getElementById(`page-${currentPage}`);
+        if (page) {
+          page.classList.remove('turned');
+        }
+        updatePageInfo();
+      }
+    }
+    
+    // Jump to specific page
+    function jumpToPage() {
+      const input = document.getElementById('jumpInput');
+      const targetPage = parseInt(input.value);
+      
+      if (targetPage >= 0 && targetPage <= totalPages) {
+        // Reset all pages
+        for (let i = 0; i < targetPage; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.add('turned');
+          }
+        }
+        for (let i = targetPage; i <= totalPages; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.remove('turned');
+          }
+        }
+        currentPage = targetPage;
+        updatePageInfo();
+        input.value = '';
+      } else {
+        alert(`Please enter a page number between 0 and ${totalPages}`);
+      }
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        previousPage();
+      }
+    });
+    
+    // Initialize
+    updatePageInfo();
+    
+    // Generate page tabs (showing sequential pages around current position)
+    function generatePageTabs() {
+      const tabsContainer = document.getElementById('pageTabs');
+      tabsContainer.innerHTML = '';
+      
+      // Calculate range of pages to show (15 pages total)
+      // Show current page ± 7 pages
+      const range = 7;
+      let startPage = Math.max(0, currentPage - range);
+      let endPage = Math.min(totalPages, currentPage + range);
+      
+      // Adjust if at beginning or end to always show 15 tabs
+      if (endPage - startPage < 14) {
+        if (currentPage < range) {
+          endPage = Math.min(totalPages, startPage + 14);
+        } else {
+          startPage = Math.max(0, endPage - 14);
+        }
+      }
+      
+      // Generate sequential tabs
+      for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+        const tab = document.createElement('div');
+        tab.className = 'page-tab';
+        if (pageNum === currentPage) {
+          tab.classList.add('active');
+        }
+        tab.textContent = pageNum;
+        tab.onclick = () => {
+          jumpToSpecificPage(pageNum);
+        };
+        tabsContainer.appendChild(tab);
+      }
+    }
+    
+    // Jump to specific page (helper function)
+    function jumpToSpecificPage(targetPage) {
+      if (targetPage >= 0 && targetPage <= totalPages) {
+        // Reset all pages
+        for (let i = 0; i < targetPage; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.add('turned');
+          }
+        }
+        for (let i = targetPage; i <= totalPages; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.remove('turned');
+          }
+        }
+        currentPage = targetPage;
+        updatePageInfo();
+        updateCurrentPageIndicator();
+        generatePageTabs();
+      }
+    }
+    
+    // Update current page indicator
+    function updateCurrentPageIndicator() {
+      document.getElementById('currentPageIndicator').textContent = currentPage;
+    }
+    
+    // Update the updatePageInfo function to also update tabs
+    const originalUpdatePageInfo = updatePageInfo;
+    updatePageInfo = function() {
+      originalUpdatePageInfo();
+      updateCurrentPageIndicator();
+      generatePageTabs();
+    }
+    
+    // Generate initial tabs
+    generatePageTabs();
+    updateCurrentPageIndicator();
+    
+    // Optional: Auto-flip demo on load
+    // setTimeout(() => {
+    //   nextPage();
+    //   setTimeout(() => nextPage(), 800);
+    // }, 1000);
+  </script>
+
+</body>
+</html>
