@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Roots of Swedish Parties - Interactive Flipbook</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .book-container {
+      perspective: 1500px;
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    .book {
+      width: 100%;
+      height: 600px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+    }
+    
+    .page {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: white;
+      border: 2px solid #333;
+      border-left: 15px solid #2c3e50;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      box-shadow: 
+        -5px 0 15px rgba(0,0,0,0.2) inset,
+        0 10px 30px rgba(0,0,0,0.3);
+      transform-origin: left center;
+      transition: transform 0.6s;
+      backface-visibility: hidden;
+    }
+    
+    /* Book spine effect */
+    .page::before {
+      content: '';
+      position: absolute;
+      left: -15px;
+      top: 0;
+      bottom: 0;
+      width: 15px;
+      background: linear-gradient(90deg, 
+        #1a252f 0%, 
+        #2c3e50 50%, 
+        #34495e 100%);
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      box-shadow: -3px 0 10px rgba(0,0,0,0.4);
+    }
+    
+    /* Spine text for front cover */
+    .cover .spine-text {
+      position: absolute;
+      left: -15px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center;
+      color: #d4af37;
+      font-size: 1.1rem;
+      font-weight: bold;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      z-index: 10;
+      pointer-events: none;
+    }
+    
+    /* Spine text for back cover */
+    .back-cover .spine-text {
+      position: absolute;
+      left: -15px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center;
+      color: #d4af37;
+      font-size: 1.1rem;
+      font-weight: bold;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      z-index: 10;
+      pointer-events: none;
+    }
+    
+    .page.turned {
+      transform: rotateY(-180deg);
+    }
+    
+    /* Book Cover */
+    .cover {
+      background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      color: white;
+      text-align: center;
+      box-shadow: 
+        -5px 0 15px rgba(0,0,0,0.2) inset,
+        0 15px 50px rgba(0,0,0,0.5);
+      border: 3px solid #d4af37;
+      border-left: 15px solid #1a472a;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+    
+    /* Cover spine effect */
+    .cover::after {
+      content: '';
+      position: absolute;
+      left: -15px;
+      top: 0;
+      bottom: 0;
+      width: 15px;
+      background: linear-gradient(90deg, 
+        #0d2415 0%, 
+        #1a472a 50%, 
+        #2d5a3d 100%);
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      box-shadow: -3px 0 10px rgba(0,0,0,0.5);
+      z-index: -1;
+    }
+    
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 2px solid #d4af37;
+      opacity: 0.5;
+    }
+    
+    .cover-ornament {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #d4af37;
+    }
+    
+    .cover-title-main {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      line-height: 1.2;
+    }
+    
+    .cover-title-sub {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #d4af37;
+      font-style: italic;
+    }
+    
+    .cover-divider {
+      width: 200px;
+      height: 3px;
+      background: #d4af37;
+      margin: 20px 0;
+    }
+    
+    .cover-author {
+      font-size: 1.3rem;
+      margin-top: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .cover-organization {
+      font-size: 1rem;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+    
+    .cover-location {
+      font-size: 0.9rem;
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+    
+    .cover-subtitle {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin: 25px 0;
+      padding: 0 20px;
+      opacity: 0.95;
+      font-style: italic;
+      text-align: center;
+      max-width: 90%;
+    }
+    
+    .cover-description {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      opacity: 0.9;
+      text-align: justify;
+      max-width: 90%;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .cover-description::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .cover-description::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    .cover-description::-webkit-scrollbar-thumb {
+      background: #d4af37;
+      border-radius: 3px;
+    }
+    
+    /* Back Cover (Swedish Version) */
+    .back-cover {
+      background: linear-gradient(135deg, #1a3a52 0%, #2d5a7d 50%, #1a3a52 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      color: white;
+      text-align: center;
+      box-shadow: 
+        -5px 0 15px rgba(0,0,0,0.2) inset,
+        0 15px 50px rgba(0,0,0,0.5);
+      border: 3px solid #d4af37;
+      border-left: 15px solid #1a3a52;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+    
+    .back-cover::after {
+      content: '';
+      position: absolute;
+      left: -15px;
+      top: 0;
+      bottom: 0;
+      width: 15px;
+      background: linear-gradient(90deg, 
+        #0d1f2f 0%, 
+        #1a3a52 50%, 
+        #2d5a7d 100%);
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      box-shadow: -3px 0 10px rgba(0,0,0,0.5);
+      z-index: -1;
+    }
+    
+    .back-cover::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 2px solid #d4af37;
+      opacity: 0.5;
+    }
+    
+    .cover-subtitle {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin: 25px 0;
+      padding: 0 20px;
+      opacity: 0.95;
+      font-style: italic;
+      text-align: center;
+      max-width: 90%;
+    }
+    
+    .cover-description {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      opacity: 0.9;
+      text-align: justify;
+      max-width: 90%;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .cover-description::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .cover-description::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    .cover-description::-webkit-scrollbar-thumb {
+      background: #d4af37;
+      border-radius: 3px;
+    }
+    
+    /* Regular Pages */
+    .page-content {
+      padding: 60px 40px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .page-number {
+      position: absolute;
+      bottom: 30px;
+      right: 40px;
+      font-size: 1rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .page-header {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #999;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Georgia', serif;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .btn:hover {
+      background: #34495e;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(0,0,0,0.4);
+    }
+    
+    .btn:disabled {
+      background: #7f8c8d;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .page-info {
+      font-size: 1.2rem;
+      color: white;
+      font-weight: bold;
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    .jump-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .jump-input {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: 2px solid #2c3e50;
+      border-radius: 5px;
+      width: 100px;
+      text-align: center;
+    }
+    
+    .info-text {
+      color: white;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    /* Page Tabs on Left Edge (Inside Book) */
+    .page-tabs {
+      position: absolute;
+      left: 5px;
+      top: 0;
+      width: 50px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      z-index: 100;
+      padding: 20px 0;
+    }
+    
+    .page-tab {
+      background: linear-gradient(90deg, #34495e 0%, #2c3e50 100%);
+      color: white;
+      padding: 8px 3px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 5px 0 0 5px;
+      box-shadow: -2px 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 3px solid #d4af37;
+      margin: 2px 0;
+    }
+    
+    .page-tab:hover {
+      background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+      transform: translateX(-3px);
+      box-shadow: -3px 3px 8px rgba(0,0,0,0.4);
+      border-right: 4px solid #f1c40f;
+    }
+    
+    .page-tab.active {
+      background: linear-gradient(90deg, #f1c40f 0%, #d4af37 100%);
+      color: #2c3e50;
+      font-weight: bold;
+      border-right: 4px solid #2c3e50;
+      transform: translateX(-5px);
+      box-shadow: -4px 3px 10px rgba(0,0,0,0.5);
+    }
+    
+    /* Current Page Indicator */
+    .current-page-indicator {
+      position: absolute;
+      left: 65px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e74c3c;
+      color: white;
+      padding: 15px 10px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      min-width: 70px;
+      text-align: center;
+      border: 3px solid #c0392b;
+      z-index: 99;
+    }
+    
+    .current-page-indicator::before {
+      content: 'NOW';
+      display: block;
+      font-size: 0.6rem;
+      opacity: 0.8;
+      margin-bottom: 3px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .book {
+        height: 400px;
+      }
+      
+      .cover-title-main {
+        font-size: 2rem;
+      }
+      
+      .cover-title-sub {
+        font-size: 1.3rem;
+      }
+      
+      .page-content {
+        padding: 30px 20px;
+      }
+      
+      .page {
+        border-left: 10px solid #2c3e50;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .page::before {
+        left: -10px;
+        width: 10px;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .cover {
+        border-left: 10px solid #1a472a;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .cover::after {
+        left: -10px;
+        width: 10px;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .back-cover {
+        border-left: 10px solid #1a3a52;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        padding: 40px 20px;
+      }
+      
+      .back-cover::after {
+        left: -10px;
+        width: 10px;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      
+      .spine-text {
+        font-size: 0.7rem !important;
+        letter-spacing: 2px !important;
+        left: -10px !important;
+      }
+      
+      .page-tabs {
+        left: 3px;
+        width: 40px;
+      }
+      
+      .page-tab {
+        font-size: 0.6rem;
+        padding: 6px 2px;
+        min-height: 25px;
+      }
+      
+      .current-page-indicator {
+        left: 50px;
+        padding: 10px 8px;
+        font-size: 1rem;
+        min-width: 55px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="book-container">
+    <div class="book" id="book">
+      <!-- Cover Page -->
+      <div class="page cover" id="page-0">
+        <div class="spine-text">THE ROOTS OF SWEDISH PARTIES</div>
+        <div class="cover-ornament">⚜️</div>
+        <h1 class="cover-title-main">The Roots<br>of<br>Swedish Parties</h1>
+        <div class="cover-divider"></div>
+        <h2 class="cover-title-sub">A Historical Analysis</h2>
+        
+        <p class="cover-subtitle">
+          The emergence of political ideologies in Sweden: liberalism, conservatism, 
+          socialism, ecologism, etc. From a two-party system of caps and hats to 
+          a multi-party system with eight parliamentary parties.
+        </p>
+        
+        <div class="cover-description">
+          Democracy in Sweden from the House of Lords through a bicameral parliament 
+          to women's suffrage, unicameral parliament, refugee suffrage, party support, 
+          party congress, elections, the role of the opposition, government formation, 
+          government crisis, re-elections, from neutrality and non-alignment to the 
+          military alliance NATO, the Palestine-Israel conflict, church elections, 
+          incomplete separation between state and church and between religion and politics, 
+          the assassination of a prime minister who was also a party leader, a female 
+          prime minister a hundred years after Swedish women gained the right to vote, 
+          and why is it so difficult to elect a prime minister with an immigrant background?
+        </div>
+        
+        <div class="cover-divider"></div>
+        <p class="cover-author">Multi-Religion Value System</p>
+        <p class="cover-organization">Research Department</p>
+        <p class="cover-location">Stockholm, Sweden • 2026</p>
+      </div>
+      
+      <!-- Generate 600 empty pages dynamically with JavaScript -->
+    </div>
+    
+    <!-- Page Tabs on Right Edge -->
+    <div class="page-tabs" id="pageTabs">
+      <!-- Tabs will be generated by JavaScript -->
+    </div>
+    
+    <!-- Current Page Indicator -->
+    <div class="current-page-indicator" id="currentPageIndicator">
+      0
+    </div>
+    
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="previousPage()">← Previous</button>
+      <div class="page-info" id="pageInfo">Page 0 of 600</div>
+      <button class="btn" id="nextBtn" onclick="nextPage()">Next →</button>
+    </div>
+    
+    <div class="jump-controls">
+      <input type="number" id="jumpInput" class="jump-input" min="0" max="600" placeholder="Page #">
+      <button class="btn" onclick="jumpToPage()">Jump to Page</button>
+    </div>
+    
+    <p class="info-text">
+      601 pages • Bilingual: English (pages 1-600) & Swedish (page 601 back cover) • Click Next/Previous or use arrow keys
+    </p>
+  </div>
+
+  <script>
+    // Generate all 600 pages + 1 back cover (601 total)
+    const book = document.getElementById('book');
+    const totalPages = 601;
+    let currentPage = 0;
+    
+    // Book structure: 17 chapters, ~35 pages each
+    const chapters = [
+      {
+        number: 1,
+        title: "Historical Foundations of Swedish Party System",
+        sections: ["1.1 Pre-Industrial Political Landscape", "1.2 The Four Estates System", "1.3 Early Reform Movements", "1.4 Religious Influence on Politics", "1.5 Transition to Modern Democracy"]
+      },
+      {
+        number: 2,
+        title: "The Social Democratic Movement",
+        sections: ["2.1 Origins and Founding Principles", "2.2 Labor Movement Integration", "2.3 Key Ideological Foundations", "2.4 Early Electoral Successes", "2.5 Building the Welfare State"]
+      },
+      {
+        number: 3,
+        title: "Conservative Traditions and Evolution",
+        sections: ["3.1 Aristocratic Roots", "3.2 Moderate Party Formation", "3.3 Economic Policy Development", "3.4 Adaptation to Democracy", "3.5 Modern Conservative Identity"]
+      },
+      {
+        number: 4,
+        title: "Liberal Streams in Swedish Politics",
+        sections: ["4.1 Classical Liberalism Emergence", "4.2 Split Between Social and Market Liberals", "4.3 Role in Democratization", "4.4 Cultural Liberal Traditions", "4.5 Contemporary Liberal Parties"]
+      },
+      {
+        number: 5,
+        title: "The Agrarian and Center Party Tradition",
+        sections: ["5.1 Farmers' Political Organization", "5.2 Rural-Urban Tensions", "5.3 Transformation to Center Party", "5.4 Environmental Politics", "5.5 Regional Representation"]
+      },
+      {
+        number: 6,
+        title: "Christian Democracy in Sweden",
+        sections: ["6.1 Religious Revival Movements", "6.2 Christian Democratic Formation", "6.3 Social Conservative Values", "6.4 Family Policy Focus", "6.5 Parliamentary Breakthrough"]
+      },
+      {
+        number: 7,
+        title: "Left-Wing Alternatives and Communism",
+        sections: ["7.1 Communist Party Origins", "7.2 Left Party Transformation", "7.3 Relations with Social Democrats", "7.4 Ideological Evolution", "7.5 Contemporary Left Politics"]
+      },
+      {
+        number: 8,
+        title: "The Green Movement and Environmental Politics",
+        sections: ["8.1 Environmental Awakening", "8.2 Green Party Foundation", "8.3 Ecosocialism and Deep Ecology", "8.4 Gender Equality Integration", "8.5 Mainstream Acceptance"]
+      },
+      {
+        number: 9,
+        title: "Nationalist and Populist Movements",
+        sections: ["9.1 Historical Nationalist Traditions", "9.2 Sweden Democrats Emergence", "9.3 Immigration Debate", "9.4 Welfare Chauvinism", "9.5 Political System Impact"]
+      },
+      {
+        number: 10,
+        title: "Religious Roots of Political Ideology",
+        sections: ["10.1 Lutheran State Church Influence", "10.2 Free Church Movements", "10.3 Secular-Religious Tensions", "10.4 Church Elections History", "10.5 Faith and Politics Today"]
+      },
+      {
+        number: 11,
+        title: "The Nordic Model's Ideological Foundations",
+        sections: ["11.1 Consensus Politics", "11.2 Corporatism and Social Partners", "11.3 Universal Welfare Principles", "11.4 Gender Equality Commitments", "11.5 International Solidarity"]
+      },
+      {
+        number: 12,
+        title: "Party System Dynamics and Coalitions",
+        sections: ["12.1 Bloc Politics Development", "12.2 Coalition Formation Patterns", "12.3 Minority Government Tradition", "12.4 Cross-Bloc Cooperation", "12.5 System Stability and Change"]
+      },
+      {
+        number: 13,
+        title: "Ideological Transformations in Modern Era",
+        sections: ["13.1 Post-Industrial Changes", "13.2 EU Integration Impact", "13.3 Globalization Pressures", "13.4 New Cleavages and Issues", "13.5 Party System Fragmentation"]
+      },
+      {
+        number: 14,
+        title: "Multi-Religion Democracy and Church Elections",
+        sections: ["14.1 Church Election System Origins", "14.2 Voting at Age 16", "14.3 Female Religious Leadership", "14.4 Democratic Religious Governance", "14.5 Peace and Stability Outcomes"]
+      },
+      {
+        number: 15,
+        title: "Comparative Perspectives",
+        sections: ["15.1 Nordic Comparisons", "15.2 European Context", "15.3 Unique Swedish Features", "15.4 Lessons for Other Democracies", "15.5 Future Challenges"]
+      },
+      {
+        number: 16,
+        title: "Contemporary Challenges and Debates",
+        sections: ["16.1 Integration and Multiculturalism", "16.2 Climate Crisis Response", "16.3 Economic Inequality", "16.4 Democratic Legitimacy", "16.5 Polarization Risks"]
+      },
+      {
+        number: 17,
+        title: "Future Trajectories",
+        sections: ["17.1 Demographic Changes", "17.2 Digital Democracy", "17.3 New Political Formations", "17.4 Multi-Religion Election Systems", "17.5 Vision for Swedish Democracy"]
+      }
+    ];
+    
+    // Calculate pages per chapter (~35 pages each)
+    const pagesPerChapter = Math.floor(totalPages / chapters.length);
+    
+    // Create all pages with chapter content
+    let currentPageNum = 1;
+    
+    chapters.forEach((chapter, chapterIndex) => {
+      const chapterStartPage = currentPageNum;
+      const chapterEndPage = (chapterIndex === chapters.length - 1) 
+        ? totalPages 
+        : chapterStartPage + pagesPerChapter - 1;
+      
+      // Calculate pages per section
+      const totalSections = chapter.sections.length + 4; // +4 for intro, conclusion, questions, key cases, further reading
+      const pagesPerSection = Math.floor((chapterEndPage - chapterStartPage + 1) / totalSections);
+      
+      let sectionPage = chapterStartPage;
+      
+      // Chapter introduction pages
+      for (let p = 0; p < pagesPerSection && currentPageNum <= totalPages; p++, currentPageNum++) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.id = `page-${currentPageNum}`;
+        page.innerHTML = `
+          <div class="page-content">
+            <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+            <div style="flex: 1; padding: 20px;">
+              ${p === 0 ? `
+                <h2 style="color: #2c3e50; font-size: 1.8rem; margin-bottom: 20px; text-align: center;">
+                  Chapter ${chapter.number}
+                </h2>
+                <h3 style="color: #d4af37; font-size: 1.4rem; margin-bottom: 30px; text-align: center;">
+                  ${chapter.title}
+                </h3>
+                <div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px; margin: 20px 0; background: #f9f9f9;">
+                  <h4 style="color: #2c3e50; margin-bottom: 15px;">Chapter Overview</h4>
+                  <p style="color: #555; line-height: 1.8;">
+                    This chapter explores the fundamental aspects of ${chapter.title.toLowerCase()}, 
+                    examining historical context, key developments, and contemporary significance 
+                    in Swedish political history.
+                  </p>
+                </div>
+                <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">Sections in This Chapter:</h4>
+                <ul style="color: #555; line-height: 2;">
+                  ${chapter.sections.map(s => `<li>${s}</li>`).join('')}
+                  <li>Conclusion</li>
+                  <li>Discussion Questions</li>
+                  <li>Key Cases and Examples</li>
+                  <li>Further Reading</li>
+                </ul>
+              ` : `
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">Introduction (continued)</h4>
+                <p style="color: #555; line-height: 1.8; text-align: justify;">
+                  [Introduction content for ${chapter.title} continues here. This section provides 
+                  essential background, historical context, and sets the stage for detailed exploration 
+                  of the topic in subsequent sections.]
+                </p>
+              `}
+            </div>
+            <div class="page-number">${currentPageNum}</div>
+          </div>
+        `;
+        book.appendChild(page);
+      }
+      
+      // Section pages
+      chapter.sections.forEach((section, sectionIndex) => {
+        for (let p = 0; p < pagesPerSection && currentPageNum <= totalPages; p++, currentPageNum++) {
+          const page = document.createElement('div');
+          page.className = 'page';
+          page.id = `page-${currentPageNum}`;
+          page.innerHTML = `
+            <div class="page-content">
+              <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+              <div style="flex: 1; padding: 20px;">
+                ${p === 0 ? `
+                  <h3 style="color: #2c3e50; font-size: 1.3rem; margin-bottom: 20px;">
+                    ${section}
+                  </h3>
+                  <p style="color: #555; line-height: 1.8; text-align: justify; margin-bottom: 15px;">
+                    This section examines ${section.toLowerCase()}, analyzing key factors, 
+                    historical developments, and their lasting impact on Swedish political culture 
+                    and party formation.
+                  </p>
+                ` : `
+                  <h4 style="color: #2c3e50; margin-bottom: 15px;">${section} (continued)</h4>
+                `}
+                <p style="color: #555; line-height: 1.8; text-align: justify;">
+                  [Detailed content for ${section}. This includes historical analysis, key figures, 
+                  important events, ideological developments, and their significance for understanding 
+                  the roots of Swedish political parties.]
+                </p>
+              </div>
+              <div class="page-number">${currentPageNum}</div>
+            </div>
+          `;
+          book.appendChild(page);
+        }
+      });
+      
+      // Conclusion pages
+      for (let p = 0; p < Math.ceil(pagesPerSection * 0.8) && currentPageNum <= totalPages; p++, currentPageNum++) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.id = `page-${currentPageNum}`;
+        page.innerHTML = `
+          <div class="page-content">
+            <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+            <div style="flex: 1; padding: 20px;">
+              ${p === 0 ? `
+                <h3 style="color: #2c3e50; font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+                  Conclusion
+                </h3>
+                <p style="color: #555; line-height: 1.8; text-align: justify; margin-bottom: 15px;">
+                  This chapter has examined ${chapter.title.toLowerCase()}, tracing historical 
+                  developments and analyzing their contemporary significance. Key insights include:
+                </p>
+                <ul style="color: #555; line-height: 1.8; margin: 15px 0 15px 30px;">
+                  <li>Historical foundations shape current political landscape</li>
+                  <li>Ideological evolution reflects societal changes</li>
+                  <li>Religious and cultural factors remain influential</li>
+                  <li>Democratic institutions continue to adapt</li>
+                </ul>
+              ` : `
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">Conclusion (continued)</h4>
+              `}
+              <p style="color: #555; line-height: 1.8; text-align: justify;">
+                Understanding these roots provides essential context for analyzing contemporary 
+                Swedish politics and party dynamics, revealing continuities and transformations 
+                in Swedish democratic development.
+              </p>
+            </div>
+            <div class="page-number">${currentPageNum}</div>
+          </div>
+        `;
+        book.appendChild(page);
+      }
+
+      // Discussion Questions page
+      if (currentPageNum <= totalPages) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.id = `page-${currentPageNum}`;
+        page.innerHTML = `
+          <div class="page-content">
+            <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+            <div style="flex: 1; padding: 20px;">
+              <h3 style="color: #2c3e50; font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+                Discussion Questions
+              </h3>
+              <ol style="color: #555; line-height: 2; margin-left: 25px;">
+                <li>How did historical factors shape the development discussed in this chapter?</li>
+                <li>What role did religious traditions play in political formation?</li>
+                <li>How do these historical roots influence contemporary politics?</li>
+                <li>What lessons can other democracies learn from Swedish experience?</li>
+                <li>How might future developments transform these traditional patterns?</li>
+                <li>What tensions exist between historical traditions and modern challenges?</li>
+                <li>How does this chapter's content relate to democratic theory?</li>
+                <li>What role does cultural context play in political development?</li>
+              </ol>
+            </div>
+            <div class="page-number">${currentPageNum}</div>
+          </div>
+        `;
+        book.appendChild(page);
+        currentPageNum++;
+      }
+
+      // Key Cases and Examples pages
+      for (let p = 0; p < 2 && currentPageNum <= totalPages; p++, currentPageNum++) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.id = `page-${currentPageNum}`;
+        page.innerHTML = `
+          <div class="page-content">
+            <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+            <div style="flex: 1; padding: 20px;">
+              ${p === 0 ? `
+                <h3 style="color: #2c3e50; font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+                  Key Cases and Examples
+                </h3>
+                <div style="background: #f9f9f9; padding: 15px; margin: 15px 0; border-left: 4px solid #2c3e50;">
+                  <h4 style="color: #2c3e50; margin-bottom: 10px;">Case Study 1</h4>
+                  <p style="color: #555; line-height: 1.8;">
+                    [Detailed case study illustrating key themes from ${chapter.title}. 
+                    Includes specific historical events, key figures, and analytical framework 
+                    for understanding broader patterns.]
+                  </p>
+                </div>
+              ` : `
+                <div style="background: #f9f9f9; padding: 15px; margin: 15px 0; border-left: 4px solid #2c3e50;">
+                  <h4 style="color: #2c3e50; margin-bottom: 10px;">Case Study 2</h4>
+                  <p style="color: #555; line-height: 1.8;">
+                    [Additional case study providing comparative perspective and demonstrating 
+                    variation in patterns discussed in this chapter. Highlights both continuities 
+                    and changes over time.]
+                  </p>
+                </div>
+              `}
+            </div>
+            <div class="page-number">${currentPageNum}</div>
+          </div>
+        `;
+        book.appendChild(page);
+      }
+      
+      // Further Reading page
+      if (currentPageNum <= totalPages) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.id = `page-${currentPageNum}`;
+        page.innerHTML = `
+          <div class="page-content">
+            <div class="page-header">Chapter ${chapter.number}: ${chapter.title}</div>
+            <div style="flex: 1; padding: 20px;">
+              <h3 style="color: #2c3e50; font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+                Further Reading
+              </h3>
+              <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">Primary Sources:</h4>
+              <ul style="color: #555; line-height: 1.8; margin-left: 25px;">
+                <li>Historical party documents and manifestos (1900-2026)</li>
+                <li>Parliamentary debates and committee reports</li>
+                <li>Contemporary newspaper archives</li>
+              </ul>
+              <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">Secondary Sources:</h4>
+              <ul style="color: #555; line-height: 1.8; margin-left: 25px;">
+                <li>Academic monographs on Swedish political history</li>
+                <li>Comparative studies of Nordic democracies</li>
+                <li>Biographical works on key political figures</li>
+                <li>Journal articles on party system development</li>
+              </ul>
+              <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">Online Resources:</h4>
+              <ul style="color: #555; line-height: 1.8; margin-left: 25px;">
+                <li>Swedish National Archives (riksarkivet.se)</li>
+                <li>Party historical archives and museums</li>
+                <li>Parliamentary documentation (riksdagen.se)</li>
+              </ul>
+            </div>
+            <div class="page-number">${currentPageNum}</div>
+          </div>
+        `;
+        book.appendChild(page);
+        currentPageNum++;
+      }
+    });
+    
+    // Fill remaining pages if any
+    while (currentPageNum <= totalPages) {
+      const page = document.createElement('div');
+      page.className = 'page';
+      page.id = `page-${currentPageNum}`;
+      page.innerHTML = `
+        <div class="page-content">
+          <div class="page-header">The Roots of Swedish Parties</div>
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #ddd;">
+            <p style="font-size: 1.2rem; font-style: italic;">Notes</p>
+          </div>
+          <div class="page-number">${currentPageNum}</div>
+        </div>
+      `;
+      book.appendChild(page);
+      currentPageNum++;
+    }
+    
+    // Add Swedish Back Cover (Page 601)
+    const backCover = document.createElement('div');
+    backCover.className = 'page back-cover';
+    backCover.id = 'page-601';
+    backCover.innerHTML = `
+      <div class="spine-text">DE SVENSKA PARTIERNAS RÖTTER</div>
+      <div class="cover-ornament">🇸🇪</div>
+      <h1 class="cover-title-main">De Svenska<br>Partiernas<br>Rötter</h1>
+      <div class="cover-divider"></div>
+      <h2 class="cover-title-sub">En Historisk Analys</h2>
+      
+      <p class="cover-subtitle">
+        Uppkomsten till de politiska ideologierna i Sverige: liberalismen, 
+        konservatismen, socialismen, ekolismen m.fl. Sverige från tvåpartisystem, 
+        mössor och hattar till ett flerpartisystem med åtta riksdagspartier.
+      </p>
+      
+      <div class="cover-description">
+        Demokratin i Sverige från ståndriksdag genom en tvåkammarriksdag till 
+        rösträtt för kvinnor, enkammarriksdag, rösträtt för flyktingar, partistöd, 
+        partikongress, valet, oppositionens roll, regeringsbildning, regeringskris, 
+        omval, från neutralitet och alliansfrihet till militäralliansen NATO, 
+        Palestina-Israel-konflikten, kyrkovalet, ofullbordad separation mellan 
+        stat och kyrka samt mellan religion och politik, mordet på en statsminister 
+        som också var partiledare, en kvinnlig statsminister hundra år efter det 
+        att svenska kvinnor fått rösträtt, och varför är det så svårt att välja 
+        en statsminister med invandrarbakgrund?
+      </div>
+      
+      <div class="cover-divider"></div>
+      <p class="cover-author">Multi-Religion Value System</p>
+      <p class="cover-organization">Forskningsavdelningen</p>
+      <p class="cover-location">Stockholm, Sverige • 2026</p>
+    `;
+    book.appendChild(backCover);
+    
+    // Update page info display
+    function updatePageInfo() {
+      document.getElementById('pageInfo').textContent = `Page ${currentPage} of 601`;
+      document.getElementById('prevBtn').disabled = currentPage === 0;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages;
+    }
+    
+    // Next page function
+    function nextPage() {
+      if (currentPage < totalPages) {
+        const page = document.getElementById(`page-${currentPage}`);
+        if (page) {
+          page.classList.add('turned');
+        }
+        currentPage++;
+        updatePageInfo();
+      }
+    }
+    
+    // Previous page function
+    function previousPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        const page = document.getElementById(`page-${currentPage}`);
+        if (page) {
+          page.classList.remove('turned');
+        }
+        updatePageInfo();
+      }
+    }
+    
+    // Jump to specific page
+    function jumpToPage() {
+      const input = document.getElementById('jumpInput');
+      const targetPage = parseInt(input.value);
+      
+      if (targetPage >= 0 && targetPage <= totalPages) {
+        // Reset all pages
+        for (let i = 0; i < targetPage; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.add('turned');
+          }
+        }
+        for (let i = targetPage; i <= totalPages; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.remove('turned');
+          }
+        }
+        currentPage = targetPage;
+        updatePageInfo();
+        input.value = '';
+      } else {
+        alert(`Please enter a page number between 0 and ${totalPages}`);
+      }
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        previousPage();
+      }
+    });
+    
+    // Initialize
+    updatePageInfo();
+    
+    // Generate page tabs (showing sequential pages around current position)
+    function generatePageTabs() {
+      const tabsContainer = document.getElementById('pageTabs');
+      tabsContainer.innerHTML = '';
+      
+      // Calculate range of pages to show (15 pages total)
+      // Show current page ± 7 pages
+      const range = 7;
+      let startPage = Math.max(0, currentPage - range);
+      let endPage = Math.min(totalPages, currentPage + range);
+      
+      // Adjust if at beginning or end to always show 15 tabs
+      if (endPage - startPage < 14) {
+        if (currentPage < range) {
+          endPage = Math.min(totalPages, startPage + 14);
+        } else {
+          startPage = Math.max(0, endPage - 14);
+        }
+      }
+      
+      // Generate sequential tabs
+      for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+        const tab = document.createElement('div');
+        tab.className = 'page-tab';
+        if (pageNum === currentPage) {
+          tab.classList.add('active');
+        }
+        tab.textContent = pageNum;
+        tab.onclick = () => {
+          jumpToSpecificPage(pageNum);
+        };
+        tabsContainer.appendChild(tab);
+      }
+    }
+    
+    // Jump to specific page (helper function)
+    function jumpToSpecificPage(targetPage) {
+      if (targetPage >= 0 && targetPage <= totalPages) {
+        // Reset all pages
+        for (let i = 0; i < targetPage; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.add('turned');
+          }
+        }
+        for (let i = targetPage; i <= totalPages; i++) {
+          const page = document.getElementById(`page-${i}`);
+          if (page) {
+            page.classList.remove('turned');
+          }
+        }
+        currentPage = targetPage;
+        updatePageInfo();
+        updateCurrentPageIndicator();
+        generatePageTabs();
+      }
+    }
+    
+    // Update current page indicator
+    function updateCurrentPageIndicator() {
+      document.getElementById('currentPageIndicator').textContent = currentPage;
+    }
+    
+    // Update the updatePageInfo function to also update tabs
+    const originalUpdatePageInfo = updatePageInfo;
+    updatePageInfo = function() {
+      originalUpdatePageInfo();
+      updateCurrentPageIndicator();
+      generatePageTabs();
+    }
+    
+    // Generate initial tabs
+    generatePageTabs();
+    updateCurrentPageIndicator();
+    
+    // Optional: Auto-flip demo on load
+    // setTimeout(() => {
+    //   nextPage();
+    //   setTimeout(() => nextPage(), 800);
+    // }, 1000);
+  </script>
+
+</body>
+</html>
