@@ -1,0 +1,246 @@
+!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De svenska partiernas rötter – Följ på Facebook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#050505',
+                        surface: '#121212',
+                        card: '#0A0A0A',
+                        'text-primary': '#FFFFFF',
+                        'text-secondary': '#A1A1AA',
+                        'text-dim': '#52525B',
+                        'brand-blue': '#0091FF',
+                        'brand-gold': '#FFC800',
+                        'brand-cyan': '#00E5FF',
+                        'fb-blue': '#1877F2',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+
+        .grid-pattern {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        .big-svg-glow {
+            filter: drop-shadow(0 0 30px rgba(24, 119, 242, 0.35));
+            transition: filter 0.5s ease, transform 0.5s ease;
+        }
+        .big-svg-glow:hover {
+            filter: drop-shadow(0 0 50px rgba(24, 119, 242, 0.55));
+            transform: scale(1.05);
+        }
+
+        .hero-title {
+            background: linear-gradient(to right, #0091FF, #00E5FF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .follow-btn {
+            background: linear-gradient(135deg, #1877F2, #0D5BBF);
+            transition: all 0.3s ease;
+        }
+        .follow-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(24, 119, 242, 0.5);
+        }
+        .follow-btn:active {
+            transform: scale(0.96);
+        }
+
+        .pulse-ring {
+            animation: pulse-ring 3s ease-out infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .float-slow {
+            animation: float-slow 8s ease-in-out infinite;
+        }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fade-up {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up-d1 { animation-delay: 0.1s; }
+        .fade-up-d2 { animation-delay: 0.25s; }
+        .fade-up-d3 { animation-delay: 0.4s; }
+        .fade-up-d4 { animation-delay: 0.55s; }
+
+        .toast {
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Small chevron */
+        .chevron {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.2s ease;
+        }
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-bg text-text-primary overflow-x-hidden">
+
+    <div class="fixed inset-0 grid-pattern pointer-events-none"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-fb-blue/8 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <main class="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 relative z-10">
+
+        <!-- SVG -->
+        <div class="fade-up float-slow relative mb-8" style="width:160px;height:160px;max-width:40vw;max-height:40vw;flex-shrink:0;">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="rounded-full border border-fb-blue/20 pulse-ring" style="width:100%;height:100%;"></div>
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="rounded-full border border-fb-blue/10 pulse-ring" style="width:100%;height:100%;animation-delay:1s;"></div>
+            </div>
+            <a href="https://www.facebook.com/desvenskapartiernasrotter" target="_blank" rel="noopener noreferrer"
+               class="block big-svg-glow w-full h-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                     style="width:100%;height:100%;display:block;">
+                    <defs>
+                        <linearGradient id="fbG" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#2D8CFF"/>
+                            <stop offset="100%" stop-color="#0D5BBF"/>
+                        </linearGradient>
+                        <radialGradient id="fbS" cx="35%" cy="30%" r="60%">
+                            <stop offset="0%" stop-color="#5BA8FF" stop-opacity="0.5"/>
+                            <stop offset="100%" stop-color="#1877F2" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="256" cy="256" r="256" fill="url(#fbG)"/>
+                    <circle cx="256" cy="256" r="256" fill="url(#fbS)"/>
+                    <circle cx="256" cy="256" r="240" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                    <path d="M296.6 163.2H324V120h-36.4c-50.8 0-62.4 30.8-62.4 56.4v26.8h-34v48h34v148h56v-148h40.8l5.6-48h-46.4v-21.2c0-11.6 4.4-18.8 19.4-18.8z" fill="white"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Title -->
+        <div class="fade-up fade-up-d1 text-center mb-4 max-w-2xl">
+            <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tighter leading-tight">
+                De svenska partiernas rötter
+            </h1>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="fade-up fade-up-d2 text-base sm:text-lg text-text-secondary font-light text-center max-w-md mb-8 leading-relaxed px-2">
+            Följ boken på Facebook för uppdateringar och insikter om svensk politisk historia.
+        </p>
+
+        <!-- Follow Button -->
+        <div class="fade-up fade-up-d3 mb-10">
+            <a href="https://www.facebook.com/desvenskapartiernasrotter" target="_blank" rel="noopener noreferrer"
+               class="follow-btn inline-flex items-center gap-2 px-7 py-3 rounded-full text-base font-bold text-white">
+                <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Följ The Roots of the Swedish Parties
+            </a>
+        </div>
+
+        <!-- Info row -->
+        <div class="fade-up fade-up-d4 flex flex-wrap justify-center gap-3 max-w-lg">
+            <div class="text-center px-4 py-3 rounded-lg bg-card border border-white/5">
+                <p class="text-xs font-medium">Boken</p>
+                <p class="text-[10px] text-text-dim mt-0.5">Politisk historia</p>
+            </div>
+            <div class="text-center px-4 py-3 rounded-lg bg-card border border-white/5">
+                <p class="text-xs font-medium">Diskussion</p>
+                <p class="text-[10px] text-text-dim mt-0.5">På Facebook</p>
+            </div>
+            <div class="text-center px-4 py-3 rounded-lg bg-card border border-white/5">
+                <p class="text-xs font-medium">Uppdateringar</p>
+                <p class="text-[10px] text-text-dim mt-0.5">Följ för nyheter</p>
+            </div>
+        </div>
+
+        <!-- Why explanation — small chevron -->
+        <details class="mt-12 max-w-md w-full rounded-lg bg-card border border-white/5 overflow-hidden">
+            <summary class="flex items-center justify-between p-4 cursor-pointer select-none list-none text-sm text-text-secondary">
+                Varför en stor SVG-ikon?
+                <svg class="chevron" id="chev" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#52525B;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 text-xs text-text-dim leading-relaxed space-y-2">
+                <p><strong class="text-text-secondary">Skalbarhet:</strong> SVG är vektorbaserat — skarpt på alla skärmar.</p>
+                <p><strong class="text-text-secondary">Upptäckbarhet:</strong> En stor ikon fångar uppmärksamheten direkt.</p>
+                <p><strong class="text-text-secondary">Mobilvänligt:</strong> Stor tryckyta = lätt att trycka med tummen.</p>
+                <p><strong class="text-text-secondary">Snabbt:</strong> Inline SVG kräver ingen extra filnedladdning.</p>
+            </div>
+        </details>
+    </main>
+
+    <footer class="py-6 px-4 border-t border-white/5 relative z-10">
+        <div class="flex items-center justify-center gap-2">
+            <span class="text-[11px] text-text-dim">De svenska partiernas rötter</span>
+            <a href="https://www.facebook.com/desvenskapartiernasrotter" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium text-fb-blue border border-fb-blue/20 hover:bg-fb-blue/10 transition-colors">
+                <svg style="width:10px;height:10px;" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Följ
+            </a>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-surface border border-fb-blue/30 rounded-lg px-4 py-2.5 flex items-center gap-2 shadow-2xl">
+        <svg style="width:14px;height:14px;" class="text-fb-blue flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        <span class="text-xs text-text-secondary">Öppnar Facebook-sidan…</span>
+    </div>
+
+    <script>
+        const toast = document.getElementById('toast');
+        let tt;
+        document.querySelectorAll('a[href*="desvenskapartiernasrotter"]').forEach(l => {
+            l.addEventListener('click', () => {
+                clearTimeout(tt);
+                toast.classList.add('show');
+                tt = setTimeout(() => toast.classList.remove('show'), 2500);
+            });
+        });
+        document.querySelector('details').addEventListener('toggle', function() {
+            document.getElementById('chev').classList.toggle('open', this.open);
+        });
+    </script>
+</body>
+</html>
